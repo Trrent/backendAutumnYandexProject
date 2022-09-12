@@ -1,4 +1,4 @@
-from src.items.models import ItemModel
+from src.items.models import ItemModel, HistoryModel
 from src.items.schemas import item_schema, history_schema, item_list_schema
 from datetime import datetime
 
@@ -47,6 +47,18 @@ def delete_item(date, item_id):
         item.delete()
         return {'code': 200, 'message': 'Удаление прошло успешно.'}, 200
     return {"code": 404, "message": "Item not found"}, 404
+
+
+def update_history(date):
+    """Получть список файлов, обновленных за последние 24 часа от date"""
+    if not validate_iso8601(date):
+        print(date)
+        return {"code": 400, "message": "Validation Failed"}, 400
+    date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+    response = {'items': []}
+    for item in HistoryModel.find_last_updates(date):
+        response['items'].append(item.json())
+    return response, 200
 
 
 def validate_iso8601(line):

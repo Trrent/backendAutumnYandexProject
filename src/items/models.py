@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from src import db
 from typing import List
@@ -105,6 +105,17 @@ class HistoryModel(db.Model):
         self.url = url
         self.item_id = id
 
+    def json(self):
+        isodate = f"{self.date.isoformat()}Z"
+        return {
+            'date': isodate,
+            'size': self.size,
+            'parentId': self.parentId,
+            'type': self.type,
+            'url': self.url,
+            'id': self.id
+        }
+
     def __repr__(self):
         return f"HistoryModel(id={self.id}, item_id={self.item_id}, type={self.type})"
 
@@ -112,7 +123,12 @@ class HistoryModel(db.Model):
     def find_by_item_id(cls, _item_id) -> ["HistoryModel"]:
         return cls.query.filter_by(item_id=_item_id).all()
 
+    @classmethod
+    def find_last_updates(cls, to_date) -> ["HistoryModel"]:
+        from_date = to_date - timedelta(hours=24)
+        return cls.query.filter(HistoryModel.date >= from_date).filter(HistoryModel.date <= to_date).filter(
+            HistoryModel.type == 'FILE').all()
+
     def save(self) -> None:
         db.session.add(self)
         db.session.commit()
-
