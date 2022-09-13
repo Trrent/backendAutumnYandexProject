@@ -14,7 +14,7 @@ parser.add_argument('date', type=str)
 
 
 @api.route('/<string:item_id>', strict_slashes=False)
-@api.param('date', description='Дата и время запроса', example='2022-05-28T21:12:01.516Z', required=True)
+@api.param('date', description='Дата и время запроса', example='2022-05-28T21:12:01Z', required=True)
 @api.param('item_id', description='Идентификатор', example='элемент_1_1')
 class DeleteNode(Resource):
     @api.response(200, 'Удаление прошло успешно.')

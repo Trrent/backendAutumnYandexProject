@@ -16,7 +16,7 @@ item_fields = api.model('SystemItemImport', {
 item_list_fields = api.model('SystemItemImportRequest', {
     'items': fields.List(fields.Nested(item_fields)),
     'updateDate': fields.DateTime('Время обновления добавляемых элементов', nullable=False,
-                                  example='2022-05-28T21:12:01.000Z')
+                                  example='2022-05-28T21:12:01Z')
 })
 
 error_fields = api.model('Error', {

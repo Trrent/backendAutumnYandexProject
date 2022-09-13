@@ -11,7 +11,7 @@ item_fields = api.model('SystemItemHistoryUnit', {
     'parentId': fields.String(title='id родительской папки', nullable=True, example='элемент_1_1'),
     'size': fields.Integer(title='Целое число, для папок поле должно содержать null', nullable=True, example=234),
     'date': fields.DateTime(title='Время последнего обновления элемента.', required=True, nullable=False,
-                            example='2022-05-28T21:12:01.000Z')
+                            example='2022-05-28T21:12:01Z')
 })
 
 item_list_fields = api.model('SystemItemHistoryResponse', {
