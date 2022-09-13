@@ -1,9 +1,8 @@
 from flask.cli import FlaskGroup
 from src import create_app, db
-from src.config import config_dict
 
 
-app = create_app(config=config_dict['test'])
+app = create_app()
 
 cli = FlaskGroup(create_app=create_app)
 
