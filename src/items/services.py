@@ -52,13 +52,27 @@ def delete_item(date, item_id):
 def update_history(date):
     """Получть список файлов, обновленных за последние 24 часа от date"""
     if not validate_iso8601(date):
-        print(date)
         return {"code": 400, "message": "Validation Failed"}, 400
     date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
     response = {'items': []}
     for item in HistoryModel.find_last_updates(date):
         response['items'].append(item.json())
     return response, 200
+
+
+def node_history(item_id, date_start, date_end):
+    """Получение истории обновлений по элементу за заданный полуинтервал [date_start, date_end)."""
+    item = ItemModel.find_by_id(item_id)
+    if item:
+        if not validate_iso8601(date_start) and not validate_iso8601(date_end):
+            return {"code": 400, "message": "Validation Failed"}, 400
+        date_start = datetime.strptime(date_start, "%Y-%m-%dT%H:%M:%SZ")
+        date_end = datetime.strptime(date_end, "%Y-%m-%dT%H:%M:%SZ")
+        response = {'items': []}
+        for item in HistoryModel.find_node_history(item_id, date_start, date_end):
+            response['items'].append(item.json())
+        return response, 200
+    return {"code": 404, "message": "Item not found"}, 404
 
 
 def validate_iso8601(line):

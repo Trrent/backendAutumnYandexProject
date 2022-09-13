@@ -113,7 +113,7 @@ class HistoryModel(db.Model):
             'parentId': self.parentId,
             'type': self.type,
             'url': self.url,
-            'id': self.id
+            'id': self.item_id
         }
 
     def __repr__(self):
@@ -128,6 +128,11 @@ class HistoryModel(db.Model):
         from_date = to_date - timedelta(hours=24)
         return cls.query.filter(HistoryModel.date >= from_date).filter(HistoryModel.date <= to_date).filter(
             HistoryModel.type == 'FILE').all()
+
+    @classmethod
+    def find_node_history(cls, item_id, date_start, date_end) -> ["HistoryModel"]:
+        return cls.query.filter(HistoryModel.item_id == item_id).filter(HistoryModel.date >= date_start).filter(
+            HistoryModel.date < date_end).all()
 
     def save(self) -> None:
         db.session.add(self)

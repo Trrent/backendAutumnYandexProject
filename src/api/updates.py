@@ -28,7 +28,7 @@ parser.add_argument('date', type=str)
 
 @api.route('/', strict_slashes=False)
 @api.param('date', description='Дата и время запроса', example='2022-05-28T21:12:01.516Z', required=True)
-class GetNodesHistory(Resource):
+class GetUpdates(Resource):
     @api.response(200, 'Информация об элементе', model=item_list_fields)
     @api.response(400, 'Невалидная схема документа или входные данные не верны.', model=error_fields)
     def get(self):
@@ -40,4 +40,4 @@ class GetNodesHistory(Resource):
         return update_history(date)
 
 
-api.add_resource(GetNodesHistory)
+api.add_resource(GetUpdates)
