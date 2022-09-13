@@ -47,8 +47,8 @@ class GetNodeHistory(Resource):
             - можно получить статистику за всё время.
         """
         args = parser.parse_args()
-        date_start = args['dateStart']
-        date_end = args['dateEnd']
+        date_start = args.get('dateStart')
+        date_end = args.get('dateEnd')
         return node_history(item_id, date_start, date_end)
 
 

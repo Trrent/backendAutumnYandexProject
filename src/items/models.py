@@ -131,8 +131,12 @@ class HistoryModel(db.Model):
 
     @classmethod
     def find_node_history(cls, item_id, date_start, date_end) -> ["HistoryModel"]:
-        return cls.query.filter(HistoryModel.item_id == item_id).filter(HistoryModel.date >= date_start).filter(
-            HistoryModel.date < date_end).all()
+        query = cls.query.filter(HistoryModel.item_id == item_id)
+        if date_start:
+            query = query.filter(HistoryModel.date >= date_start)
+        if date_end:
+            query = query.filter(HistoryModel.date < date_end)
+        return query.all()
 
     def save(self) -> None:
         db.session.add(self)

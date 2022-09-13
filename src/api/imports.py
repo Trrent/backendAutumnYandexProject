@@ -52,7 +52,6 @@ class AddNodes(Resource):
 
             Гарантируется, что во входных данных нет циклических зависимостей и поле updateDate монотонно возрастает. Гарантируется, что при проверке передаваемое время кратно секундам.
         """
-        print(request.get_json())
         return create_item(request.get_json())
 
 

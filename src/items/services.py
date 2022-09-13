@@ -64,10 +64,14 @@ def node_history(item_id, date_start, date_end):
     """Получение истории обновлений по элементу за заданный полуинтервал [date_start, date_end)."""
     item = ItemModel.find_by_id(item_id)
     if item:
-        if not validate_iso8601(date_start) and not validate_iso8601(date_end):
-            return {"code": 400, "message": "Validation Failed"}, 400
-        date_start = datetime.strptime(date_start, "%Y-%m-%dT%H:%M:%SZ")
-        date_end = datetime.strptime(date_end, "%Y-%m-%dT%H:%M:%SZ")
+        if date_start:
+            if not validate_iso8601(date_start):
+                return {"code": 400, "message": "Validation Failed"}, 400
+            date_start = datetime.strptime(date_start, "%Y-%m-%dT%H:%M:%SZ")
+        if date_end:
+            if not validate_iso8601(date_end):
+                return {"code": 400, "message": "Validation Failed"}, 400
+            date_end = datetime.strptime(date_end, "%Y-%m-%dT%H:%M:%SZ")
         response = {'items': []}
         for item in HistoryModel.find_node_history(item_id, date_start, date_end):
             response['items'].append(item.json())
@@ -87,7 +91,9 @@ def validate_iso8601(line):
 def check_request_data(items, date):
     if any(i['id'] is None if i.get('id') else True for i in items):
         return False
-    if not all(ItemModel.find_by_id(i['parentId']).type == 'FOLDER' for i in filter(lambda x: x.get('parenId') is not None, items)):
+    if not all(True if ItemModel.find_by_id(i['parentId']) else False for i in filter(lambda x: x.get('parentId') is not None, items)):
+        return False
+    if not all(ItemModel.find_by_id(i['parentId']).type == 'FOLDER' for i in filter(lambda x: x.get('parentId') is not None, items)):
         return False
     if not all(i.get('url') is None if i['type'] == 'FOLDER' else True for i in items):
         return False
@@ -106,7 +112,6 @@ def check_request_data(items, date):
         return False
     if not validate_iso8601(date):
         return False
-    print(4)
     if any(i['type'] not in ['FOLDER', 'FILE'] for i in items):
         return False
     if any(i['id'] == i.get('parentId', '') for i in items):
