@@ -56,7 +56,8 @@ def update_history(date):
     date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
     response = {'items': []}
     for item in HistoryModel.find_last_updates(date):
-        response['items'].append(item.json())
+        if ItemModel.find_by_id(item.item_id):
+            response['items'].append(item.json())
     return response, 200
 
 
